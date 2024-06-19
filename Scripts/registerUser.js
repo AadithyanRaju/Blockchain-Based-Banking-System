@@ -5,10 +5,9 @@ const { Wallets } = require('fabric-network');
 
 'use strict';
 
+const ccpPath = path.resolve(__dirname, '..', '..', 'fabric-samples', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
 
-const ccpPath = path.resolve(__dirname, '..','..','fabric-samples','test-network','organizations','peerOrganizations','org1.example.com', 'connection-org1.json');
-
-async function main() {
+async function main(username) {
     try {
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
@@ -18,7 +17,6 @@ async function main() {
         const walletPath = path.join(process.cwd(), 'wallet');
         const wallet = await Wallets.newFileSystemWallet(walletPath);
 
-        const username = process.argv[2]; // Get the username from command line argument
         if (!username) {
             console.log('Please provide a username as a command line argument');
             return;
@@ -42,12 +40,12 @@ async function main() {
 
         const secret = await ca.register({
             affiliation: 'org1.department1',
-            enrollmentID: username, // Use the username from command line argument
+            enrollmentID: username,
             role: 'client'
         }, adminUser);
 
         const enrollment = await ca.enroll({
-            enrollmentID: username, // Use the username from command line argument
+            enrollmentID: username,
             enrollmentSecret: secret
         });
 
@@ -68,4 +66,5 @@ async function main() {
     }
 }
 
-main();
+const username = process.argv[2];
+main(username);
