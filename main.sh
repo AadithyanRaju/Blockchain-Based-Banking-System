@@ -8,6 +8,25 @@ if [ ! -f "$ROOTDIR/main.sh" ]; then
     exit 1
 fi
 
+install(){
+    packages="curl git nodejs npm docker docker-compose"
+    aptpkgs="golang"
+    pacmanpkgs="go"
+    
+    if [ -x "$(command -v apt-get)" ]; then
+        sudo apt update
+        sudo apt install $packages $aptpkgs
+    elif [ -x "$(command -v pacman)" ]; then
+        sudo pacman -Syy
+        sudo pacman -S $packages $pacmanpkgs
+    else
+        echo "Invalid package manager."
+        echo "Please install the required packages manually."
+        echo "Packages: $packages $aptpkgs"
+        exit 1
+    fi
+}
+
 while true; do
     clear
     echo "Menu:"
@@ -25,7 +44,11 @@ while true; do
     case $choice in
         1)
             echo "Docker, Docker Compose, GoLang, and NodeJS needs be installed."
-            echo "Script will be updated soon."
+            echo "Do you want to install the required packages? (y/n)"
+            read -p "Enter your choice: " install_choice
+            if [ "$install_choice" == "y" ]; then
+                install
+            fi
             
             ;;
         2)
