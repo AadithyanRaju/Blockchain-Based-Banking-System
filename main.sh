@@ -69,7 +69,8 @@ while true; do
             if [ -d "$ROOTDIR/go/src/github.com/$GITHUBID/fabric-samples" ]; then
                 echo "Fabric Samples already exists."
             else
-                ./install-fabric.sh d s b
+                ./install-fabric.sh d s b -f 2.5.9 -c 1.5.12
+
             fi
 
             if [ ! -d "$ROOTDIR/go/src/github.com/$GITHUBID/chaincode/banking/go" ]; then
@@ -90,7 +91,8 @@ while true; do
                 echo "Setting up Application..."
                 mkdir -p "$ROOTDIR/go/src/github.com/$GITHUBID/banking-system"
                 cd "$ROOTDIR/go/src/github.com/$GITHUBID/banking-system"
-                npx hardhat init
+                # uncomment the below line if you want to use hardhat for ethereum development
+                #npx hardhat init 
                 npm install fabric-network fabric-ca-client
                 cd $ROOTDIR
             else
@@ -168,3 +170,4 @@ while true; do
 
     read -p "Press Enter to continue..."
 done
+cd $ROOTDIR
