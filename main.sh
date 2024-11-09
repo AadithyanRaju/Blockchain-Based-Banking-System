@@ -117,7 +117,7 @@ while true; do
             export GOPROXY="https://proxy.golang.org"
             export GOMODCACHE="$ROOTDIR/go/pkg/mod"
             export GOPATH="$ROOTDIR/go"
-            export GOROOT="/usr/lib/go"
+            export GOROOT="$(which go)"
             if [ $(docker ps | grep hyperledger | wc -l) -eq 0 ]; then
                 ./network.sh up createChannel -ca
             fi
