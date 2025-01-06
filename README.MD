@@ -1,4 +1,8 @@
 # Blockchain Based Banking System
+## Notice
+Check the working model on branch v1
+This main branch is/going to be redeveloped for a better system.
+
 ## Introduction
 ### Overview
 In today’s rapidly evolving financial landscape, the need for secure, transparent, and efficient banking systems has never been more critical. Traditional banking infrastructures, though widely used, often face challenges such as high operational costs, vulnerability to fraud, and delays due to centralized processing. To address these issues, our blockchain-based banking system leverages Distributed Ledger Technology (DLT), specifically Hyperledger Fabric, to create a decentralized, tamper-resistant, and highly secure banking backend.
