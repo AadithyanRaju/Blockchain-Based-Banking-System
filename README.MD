@@ -32,19 +32,4 @@ The main objectives of the blockchain-based banking system are:
 ## NOTE
 Read all the code used in the project, for safety reasons.
 
-## Running
-Run the bash script
-```bash
-bash main.sh
-```
-    Menu:
-    1. Install Required Packages ( Debian and Arch based Destros)
-    2. Setup the workspace (Creates and updates edited documents)
-    3. Start the Blockchain
-    4. Update Chaincode to the Blockchain
-    5. Stop the Blockchain
-    6. List Docker Containers
-    7. Enter Bash/Zsh Shell (Default: Bash, enter zsh for zsh)
-    8. Reset the workspace (Uses Sudo, use only if it is nessessary)
-    9. Exit
 
