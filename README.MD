@@ -1,6 +1,6 @@
 # Blockchain Based Banking System
 ## Notice
-Check the working model on branch v1
+Check the working model on branch [v1](https://github.com/AadithyanRaju/Blockchain-Based-Banking-System/tree/v1).
 This main branch is/going to be redeveloped for a better system.
 
 ## Introduction
