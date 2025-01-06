@@ -1,243 +1,179 @@
 package main
 
 import (
-    "encoding/json"
-    "fmt"
-    "github.com/hyperledger/fabric-contract-api-go/contractapi"
+	"encoding/json"
+	"fmt"
+	"time"
+
+	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
-type SmartContract struct {
-    contractapi.Contract
-}
-
+// Account represents a user account in the banking system
 type Account struct {
-    ID           string        `json:"id"`
-    Balance      int           `json:"balance"`
-    Transactions []Transaction `json:"transactions"`
+	UserID       string  `json:"userId"`
+	Name         string  `json:"name"`
+	AadhaarHash  string  `json:"aadhaarHash"`
+	Email        string  `json:"email"`
+	PasswordHash string  `json:"passwordHash"`
+	PhoneNumber  string  `json:"phoneNumber"`
+	Status       string  `json:"status"` // Active, Suspended, Closed
+	Role         string  `json:"role"`   // Customer, Admin
+	Balance      float64 `json:"balance"`
 }
 
+// Transaction represents a transaction record
 type Transaction struct {
-    ID        string `json:"id"`
-    Type      string `json:"type"` // "deposit", "withdraw", or "transfer"
-    Amount    int    `json:"amount"`
-    Timestamp string `json:"timestamp"`
+	UserID         string    `json:"userId"`
+	ReferenceNumber string    `json:"referenceNumber"`
+	Type           string    `json:"type"` // Credit or Debit
+	Amount         float64   `json:"amount"`
+	Timestamp      time.Time `json:"timestamp"`
 }
 
-func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
-    accounts := []Account{
-        {ID: "acc1", Balance: 1000, Transactions: []Transaction{}},
-        {ID: "acc2", Balance: 2000, Transactions: []Transaction{}},
-    }
-
-    for _, account := range accounts {
-        accountJSON, err := json.Marshal(account)
-        if err != nil {
-            return err
-        }
-
-        err = ctx.GetStub().PutState(account.ID, accountJSON)
-        if err != nil {
-            return fmt.Errorf("failed to put account to world state. %v", err)
-        }
-    }
-
-    return nil
+// SmartContract provides functions for managing accounts and transactions
+type SmartContract struct {
+	contractapi.Contract
 }
 
-func (s *SmartContract) CreateAccount(ctx contractapi.TransactionContextInterface, id string, balance int) error {
-    account := Account{
-        ID:           id,
-        Balance:      balance,
-        Transactions: []Transaction{},
-    }
+// Prefixes for state keys
+const (
+	AccountPrefix     = "USER_"
+	TransactionPrefix = "TRANSACTION_"
+)
 
-    accountJSON, err := json.Marshal(account)
-    if err != nil {
-        return err
-    }
+// CreateAccount adds a new account to the ledger
+func (s *SmartContract) CreateAccount(ctx contractapi.TransactionContextInterface, userID, name, aadhaarHash, email, passwordHash, phoneNumber, role string) error {
+	accountKey := AccountPrefix + userID
 
-    return ctx.GetStub().PutState(id, accountJSON)
+	existingAccount, err := ctx.GetStub().GetState(accountKey)
+	if err != nil {
+		return fmt.Errorf("failed to check if account exists: %v", err)
+	}
+	if existingAccount != nil {
+		return fmt.Errorf("account already exists")
+	}
+
+	account := Account{
+		UserID:       userID,
+		Name:         name,
+		AadhaarHash:  aadhaarHash,
+		Email:        email,
+		PasswordHash: passwordHash,
+		PhoneNumber:  phoneNumber,
+		Status:       "Active",
+		Role:         role,
+		Balance:      0.0,
+	}
+
+	accountJSON, err := json.Marshal(account)
+	if err != nil {
+		return fmt.Errorf("failed to marshal account: %v", err)
+	}
+
+	return ctx.GetStub().PutState(accountKey, accountJSON)
 }
 
-func (s *SmartContract) QueryAccount(ctx contractapi.TransactionContextInterface, id string) (*Account, error) {
-    accountJSON, err := ctx.GetStub().GetState(id)
-    if err != nil {
-        return nil, fmt.Errorf("failed to read from world state. %v", err)
-    }
-    if accountJSON == nil {
-        return nil, fmt.Errorf("the account %s does not exist", id)
-    }
+// GetAccount retrieves an account by its userID
+func (s *SmartContract) GetAccount(ctx contractapi.TransactionContextInterface, userID string) (*Account, error) {
+	accountKey := AccountPrefix + userID
 
-    var account Account
-    err = json.Unmarshal(accountJSON, &account)
-    if err != nil {
-        return nil, err
-    }
+	accountJSON, err := ctx.GetStub().GetState(accountKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read account: %v", err)
+	}
+	if accountJSON == nil {
+		return nil, fmt.Errorf("account does not exist")
+	}
 
-    return &account, nil
+	var account Account
+	err = json.Unmarshal(accountJSON, &account)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal account: %v", err)
+	}
+
+	return &account, nil
 }
 
-func (s *SmartContract) Deposit(ctx contractapi.TransactionContextInterface, id string, amount int, timestamp string) error {
-    account, err := s.QueryAccount(ctx, id)
-    if err != nil {
-        return err
-    }
+// CreateTransaction records a new transaction and updates the account balance
+func (s *SmartContract) CreateTransaction(ctx contractapi.TransactionContextInterface, userID, referenceNumber, transactionType string, amount float64) error {
+	account, err := s.GetAccount(ctx, userID)
+	if err != nil {
+		return err
+	}
 
-    account.Balance += amount
+	if account.Status != "Active" {
+		return fmt.Errorf("account is not active")
+	}
 
-    transaction := Transaction{
-        ID:        ctx.GetStub().GetTxID(),
-        Type:      "deposit",
-        Amount:    amount,
-        Timestamp: timestamp,
-    }
-    account.Transactions = append(account.Transactions, transaction)
+	if transactionType == "Debit" && account.Balance < amount {
+		return fmt.Errorf("insufficient funds")
+	}
 
-    accountJSON, err := json.Marshal(account)
-    if err != nil {
-        return err
-    }
+	transaction := Transaction{
+		UserID:         userID,
+		ReferenceNumber: referenceNumber,
+		Type:           transactionType,
+		Amount:         amount,
+		Timestamp:      time.Now(),
+	}
 
-    return ctx.GetStub().PutState(id, accountJSON)
+	if transactionType == "Credit" {
+		account.Balance += amount
+	} else if transactionType == "Debit" {
+		account.Balance -= amount
+	} else {
+		return fmt.Errorf("invalid transaction type")
+	}
+
+	accountKey := AccountPrefix + userID
+	accountJSON, err := json.Marshal(account)
+	if err != nil {
+		return fmt.Errorf("failed to marshal updated account: %v", err)
+	}
+
+	transactionKey := fmt.Sprintf("%s%s_%s", TransactionPrefix, userID, referenceNumber)
+	transactionJSON, err := json.Marshal(transaction)
+	if err != nil {
+		return fmt.Errorf("failed to marshal transaction: %v", err)
+	}
+
+	err = ctx.GetStub().PutState(accountKey, accountJSON)
+	if err != nil {
+		return fmt.Errorf("failed to update account: %v", err)
+	}
+
+	return ctx.GetStub().PutState(transactionKey, transactionJSON)
 }
 
-func (s *SmartContract) Withdraw(ctx contractapi.TransactionContextInterface, id string, amount int, timestamp string) error {
-    account, err := s.QueryAccount(ctx, id)
-    if err != nil {
-        return err
-    }
+// GetTransaction retrieves a transaction by its key
+func (s *SmartContract) GetTransaction(ctx contractapi.TransactionContextInterface, userID, referenceNumber string) (*Transaction, error) {
+	transactionKey := fmt.Sprintf("%s%s_%s", TransactionPrefix, userID, referenceNumber)
 
-    if account.Balance < amount {
-        return fmt.Errorf("insufficient funds")
-    }
+	transactionJSON, err := ctx.GetStub().GetState(transactionKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read transaction: %v", err)
+	}
+	if transactionJSON == nil {
+		return nil, fmt.Errorf("transaction does not exist")
+	}
 
-    account.Balance -= amount
+	var transaction Transaction
+	err = json.Unmarshal(transactionJSON, &transaction)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal transaction: %v", err)
+	}
 
-    transaction := Transaction{
-        ID:        ctx.GetStub().GetTxID(),
-        Type:      "withdraw",
-        Amount:    amount,
-        Timestamp: timestamp,
-    }
-    account.Transactions = append(account.Transactions, transaction)
-
-    accountJSON, err := json.Marshal(account)
-    if err != nil {
-        return err
-    }
-
-    return ctx.GetStub().PutState(id, accountJSON)
-}
-
-func (s *SmartContract) Transfer(ctx contractapi.TransactionContextInterface, fromID string, toID string, amount int, timestamp string) error {
-    fromAccount, err := s.QueryAccount(ctx, fromID)
-    if err != nil {
-        return err
-    }
-
-    if fromAccount.Balance < amount {
-        return fmt.Errorf("insufficient funds")
-    }
-
-    toAccount, err := s.QueryAccount(ctx, toID)
-    if err != nil {
-        return err
-    }
-
-    fromAccount.Balance -= amount
-    toAccount.Balance += amount
-
-    transferID := ctx.GetStub().GetTxID()
-
-    fromTransaction := Transaction{
-        ID:        transferID,
-        Type:      "transfer_out",
-        Amount:    amount,
-        Timestamp: timestamp,
-    }
-    toTransaction := Transaction{
-        ID:        transferID,
-        Type:      "transfer_in",
-        Amount:    amount,
-        Timestamp: timestamp,
-    }
-
-    fromAccount.Transactions = append(fromAccount.Transactions, fromTransaction)
-    toAccount.Transactions = append(toAccount.Transactions, toTransaction)
-
-    fromAccountJSON, err := json.Marshal(fromAccount)
-    if err != nil {
-        return err
-    }
-
-    toAccountJSON, err := json.Marshal(toAccount)
-    if err != nil {
-        return err
-    }
-
-    err = ctx.GetStub().PutState(fromID, fromAccountJSON)
-    if err != nil {
-        return err
-    }
-
-    return ctx.GetStub().PutState(toID, toAccountJSON)
-}
-
-func (s *SmartContract) UserExists(ctx contractapi.TransactionContextInterface, id string) (bool, error) {
-    accountJSON, err := ctx.GetStub().GetState(id)
-    if err != nil {
-        return false, fmt.Errorf("failed to read from world state. %v", err)
-    }
-    return accountJSON != nil, nil
-}
-
-func (s *SmartContract) GetAllAccounts(ctx contractapi.TransactionContextInterface) ([]*Account, error) {
-    resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
-    if err != nil {
-        return nil, err
-    }
-    defer resultsIterator.Close()
-
-    var accounts []*Account
-    for resultsIterator.HasNext() {
-        queryResponse, err := resultsIterator.Next()
-        if err != nil {
-            return nil, err
-        }
-
-        var account Account
-        err = json.Unmarshal(queryResponse.Value, &account)
-        if err != nil {
-            return nil, err
-        }
-
-        accounts = append(accounts, &account)
-    }
-
-    return accounts, nil
-}
-
-func (s *SmartContract) DeleteAccount(ctx contractapi.TransactionContextInterface, id string) error {
-    return ctx.GetStub().DelState(id)
-}
-
-func (s *SmartContract) QueryTransactions(ctx contractapi.TransactionContextInterface, id string) ([]Transaction, error) {
-    account, err := s.QueryAccount(ctx, id)
-    if err != nil {
-        return nil, err
-    }
-    return account.Transactions, nil
+	return &transaction, nil
 }
 
 func main() {
-    chaincode, err := contractapi.NewChaincode(new(SmartContract))
-    if err != nil {
-        fmt.Printf("Error creating banking chaincode: %s", err.Error())
-        return
-    }
+	chaincode, err := contractapi.NewChaincode(&SmartContract{})
+	if err != nil {
+		fmt.Printf("Error creating banking chaincode: %v\n", err)
+		return
+	}
 
-    if err := chaincode.Start(); err != nil {
-        fmt.Printf("Error starting banking chaincode: %s", err.Error())
-        return
-    }
+	if err := chaincode.Start(); err != nil {
+		fmt.Printf("Error starting banking chaincode: %v\n", err)
+	}
 }
