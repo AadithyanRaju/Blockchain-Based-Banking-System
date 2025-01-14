@@ -88,19 +88,19 @@ while true; do
             else
                 echo "Chaincode already exists."
             fi
-
-            if [ ! -d "$ROOTDIR/go/src/github.com/$GITHUBID/$PROJECTNAME" ]; then
-                echo "Setting up Application..."
-                mkdir -p "$ROOTDIR/go/src/github.com/$GITHUBID/$PROJECTNAME"
-                cd "$ROOTDIR/go/src/github.com/$GITHUBID/$PROJECTNAME"
-                # uncomment the below line if you want to use hardhat for ethereum development
-                #npx hardhat init 
-                npm install fabric-network fabric-ca-client
-                cd $ROOTDIR
-            else
-                echo "$PROJECTNAME already exists."
-                echo "If you want to reset the workspace, please delete the 'go' directory and run this script again."
-            fi
+            # 
+            # if [ ! -d "$ROOTDIR/go/src/github.com/$GITHUBID/$PROJECTNAME" ]; then
+            #     echo "Setting up Application..."
+            #     mkdir -p "$ROOTDIR/go/src/github.com/$GITHUBID/$PROJECTNAME"
+            #     cd "$ROOTDIR/go/src/github.com/$GITHUBID/$PROJECTNAME"
+            #     # uncomment the below line if you want to use hardhat for ethereum development
+            #     #npx hardhat init 
+            #     npm install fabric-network fabric-ca-client
+            #     cd $ROOTDIR
+            # else
+            #     echo "$PROJECTNAME already exists."
+            #     echo "If you want to reset the workspace, please delete the 'go' directory and run this script again."
+            # fi
 
             echo "Updating the $PROJECTNAME contracts..."
             cp $ROOTDIR/$CONTRACTNAME.go $ROOTDIR/go/src/github.com/$GITHUBID/chaincode/$CONTRACTNAME/go/$CONTRACTNAME.go
