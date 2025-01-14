@@ -36,4 +36,9 @@ The main objectives of the blockchain-based banking system are:
 ## NOTE
 Read all the code used in the project, for safety reasons.
 
-
+## Setup
+1. Run ```bash main.sh```
+2. Use the menu and run 2,3, and 4 to Create working directory, start the blockchain network and deploy the chaincode
+3. Run ```npm install``` to get all required packages.
+4. Run ```node enrolladmin.js``` to enroll the blockchain network admin.
+5. Run ```node grpc-server.js``` to start grpc.
