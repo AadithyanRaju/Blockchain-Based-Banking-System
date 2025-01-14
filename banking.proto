@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+service BankingService {
+  rpc CreateAccount (AccountRequest) returns (Response);
+  rpc GetAccount (AccountID) returns (AccountResponse);
+  rpc Deposit (TransactionRequest) returns (Response);
+  rpc Withdraw (TransactionRequest) returns (Response);
+  rpc CreateTransfer (TransferRequest) returns (Response);
+  rpc GetTransfer (TransferQuery) returns (TransferResponse);
+}
+
+message AccountRequest {
+  string userID = 1;
+  string name = 2;
+  string aadhaarHash = 3;
+  string email = 4;
+  string passwordHash = 5;
+  string phoneNumber = 6;
+  string role = 7;
+  double balance = 8;
+}
+
+message AccountID {
+  string userID = 1;
+}
+
+message AccountResponse {
+  string userID = 1;
+  string name = 2;
+  string aadhaarHash = 3;
+  string email = 4;
+  string phoneNumber = 5;
+  string role = 6;
+  double balance = 7;
+}
+
+message TransactionRequest {
+  string userID = 1;
+  double amount = 2;
+  string referenceNumber = 3;
+}
+
+message TransferRequest {
+  string senderID = 1;
+  string receiverID = 2;
+  double amount = 3;
+  string referenceNumber = 4;
+}
+
+message TransferQuery {
+  string senderID = 1;
+  string receiverID = 2;
+  string referenceNumber = 3;
+}
+
+message TransferResponse {
+  string senderID = 1;
+  string receiverID = 2;
+  double amount = 3;
+  string referenceNumber = 4;
+  string status = 5;
+}
+
+message Response {
+  string message = 1;
+}
