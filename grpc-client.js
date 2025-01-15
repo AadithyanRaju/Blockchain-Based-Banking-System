@@ -1,25 +1,33 @@
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
+import { loadPackageDefinition, credentials } from '@grpc/grpc-js';
+import { loadSync } from '@grpc/proto-loader';
+import { createHash } from 'crypto';
 
 const PROTO_PATH = './banking.proto';
-const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+const packageDefinition = loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
   enums: String,
   defaults: true,
   oneofs: true
 });
-const bankingProto = grpc.loadPackageDefinition(packageDefinition).BankingService;
+const bankingProto = loadPackageDefinition(packageDefinition).BankingService;
 
-const client = new bankingProto('localhost:50051', grpc.credentials.createInsecure());
+function hashWithSHA256(data) {
+  const hash = createHash('sha256');
+  hash.update(data);
+  return hash.digest('hex');
+}
+
+const client = new bankingProto('172.16.241.128:50051', credentials.createInsecure());
 
 // Example: Create Account
+/*
 client.CreateAccount({
-  userID: 'USER_001',
+  userID: 'johndoe',
   name: 'John Doe',
-  aadhaarHash: '####',
+  aadhaarHash: hashWithSHA256('111122223333'),
   email: 'john@example.com',
-  passwordHash: '####',
+  passwordHash: hashWithSHA256('johndoe'),
   phoneNumber: '1234567890',
   role: 'user',
   balance: 1000.0
@@ -28,5 +36,13 @@ client.CreateAccount({
     console.error('Error:', err);
   } else {
     console.log(response.message);
+  }
+});
+*/
+client.GetAccount({ userID: 'johndoe' }, (err, response) => {
+  if (err) {
+    console.error('Error:', err);
+  } else {
+    console.log(response);
   }
 });
