@@ -9,7 +9,7 @@ import e from 'express';
 
 async function main() {
     try {
-        const ccpPath = resolve(__dirname,'go','src','github.com','AadithyanRaju','fabric-samples','test-network','organizations','peerOrganizations','org1.example.com', 'connection-org1.json');
+        const ccpPath = resolve('.','go','src','github.com','AadithyanRaju','fabric-samples','test-network','organizations','peerOrganizations','org1.example.com', 'connection-org1.json');
         const ccp = JSON.parse(readFileSync(ccpPath, 'utf8'));
 
         const caURL = ccp.certificateAuthorities['ca.org1.example.com'].url; 
