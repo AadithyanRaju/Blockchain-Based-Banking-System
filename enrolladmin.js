@@ -1,21 +1,21 @@
 'use strict';
 
-const FabricCAServices = require('fabric-ca-client');
-const { Wallets } = require('fabric-network');
-const fs = require('fs');
-const path = require('path');
-const fsextra = require('fs-extra');
-const e = require('express');
+import FabricCAServices from 'fabric-ca-client';
+import { Wallets } from 'fabric-network';
+import { readFileSync } from 'fs';
+import { resolve, join } from 'path';
+import fsextra from 'fs-extra';
+import e from 'express';
 
 async function main() {
     try {
-        const ccpPath = path.resolve(__dirname,'go','src','github.com','AadithyanRaju','fabric-samples','test-network','organizations','peerOrganizations','org1.example.com', 'connection-org1.json');
-        const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+        const ccpPath = resolve(__dirname,'go','src','github.com','AadithyanRaju','fabric-samples','test-network','organizations','peerOrganizations','org1.example.com', 'connection-org1.json');
+        const ccp = JSON.parse(readFileSync(ccpPath, 'utf8'));
 
         const caURL = ccp.certificateAuthorities['ca.org1.example.com'].url; 
         const ca = new FabricCAServices(caURL);
 
-        const walletPath = path.join(process.cwd(), 'wallet');
+        const walletPath = join(process.cwd(), 'wallet');
         const wallet = await Wallets.newFileSystemWallet(walletPath);
         console.log(`Wallet path: ${walletPath}`);
 
@@ -45,4 +45,4 @@ async function main() {
 
 await main();
 
-module.exports = { main };
+export default { main };
