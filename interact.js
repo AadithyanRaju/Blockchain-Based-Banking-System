@@ -103,7 +103,7 @@ class BlockchainService {
         const { gateway, contract } = await this._connect();
         try {
             await contract.submitTransaction(
-                'CreateTransfer',
+                'TransferFunds',
                 senderID,
                 receiverID,
                 amount.toString(),
