@@ -43,8 +43,8 @@ const implementations = {
   },
   Deposit: async (call, callback) => {
     try {
-      const { userID, amount, referenceNumber } = call.request;
-      await blockchainService.deposit(userID, amount, referenceNumber);
+      const { userID, amount, referenceNumber, timestamp } = call.request;
+      await blockchainService.deposit(userID, amount, referenceNumber, timestamp);
       callback(null, { message: 'Deposit successful' });
     } catch (error) {
       callback(error, null);
@@ -52,8 +52,8 @@ const implementations = {
   },
   Withdraw: async (call, callback) => {
     try {
-      const { userID, amount, referenceNumber } = call.request;
-      await blockchainService.withdraw(userID, amount, referenceNumber);
+      const { userID, amount, referenceNumber, timestamp } = call.request;
+      await blockchainService.withdraw(userID, amount, referenceNumber, timestamp);
       callback(null, { message: 'Withdrawal successful' });
     } catch (error) {
       callback(error, null);
@@ -61,8 +61,8 @@ const implementations = {
   },
   CreateTransfer: async (call, callback) => {
     try {
-      const { senderID, receiverID, amount, referenceNumber } = call.request;
-      await blockchainService.createTransfer(senderID, receiverID, amount, referenceNumber);
+      const { senderID, receiverID, amount, referenceNumber, timestamp } = call.request;
+      await blockchainService.createTransfer(senderID, receiverID, amount, referenceNumber, timestamp);
       callback(null, { message: 'Transfer created successfully' });
     } catch (error) {
       callback(error, null);

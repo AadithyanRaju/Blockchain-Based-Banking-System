@@ -38,6 +38,7 @@ message TransactionRequest {
   string userID = 1;
   double amount = 2;
   string referenceNumber = 3;
+  string timestamp = 4;
 }
 
 message TransferRequest {
@@ -45,6 +46,7 @@ message TransferRequest {
   string receiverID = 2;
   double amount = 3;
   string referenceNumber = 4;
+  string timestamp = 5;
 }
 
 message TransferQuery {
