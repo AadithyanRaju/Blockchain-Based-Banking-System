@@ -70,7 +70,8 @@ class BlockchainService {
                 'Deposit',
                 userID,
                 amount.toString(),
-                referenceNumber
+                referenceNumber,
+                timestamp
             );
             console.log('Deposit successful');
         } catch (error) {
@@ -88,7 +89,8 @@ class BlockchainService {
                 'Withdraw',
                 userID,
                 amount.toString(),
-                referenceNumber
+                referenceNumber,
+                timestamp
             );
             console.log('Withdrawal successful');
         } catch (error) {
@@ -107,7 +109,8 @@ class BlockchainService {
                 senderID,
                 receiverID,
                 amount.toString(),
-                referenceNumber
+                referenceNumber,
+                timestamp
             );
             console.log('Transfer created successfully');
         } catch (error) {
