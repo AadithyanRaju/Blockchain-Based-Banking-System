@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"time"
-
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
@@ -103,7 +101,7 @@ func (s *SmartContract) GetAccount(ctx contractapi.TransactionContextInterface, 
 }
 
 // TransferFunds transfers an amount from one account to another
-func (s *SmartContract) TransferFunds(ctx contractapi.TransactionContextInterface, senderID, receiverID, amountStr, referenceNumber string) error {
+func (s *SmartContract) TransferFunds(ctx contractapi.TransactionContextInterface, senderID, receiverID, amountStr, referenceNumber, timestamp string) error {
 	// Parse amount
 	amount, err := parseAmount(amountStr)
 	if err != nil {
@@ -138,7 +136,6 @@ func (s *SmartContract) TransferFunds(ctx contractapi.TransactionContextInterfac
 	}
 
 	// Record transactions
-	timestamp := time.Now().String()
 	senderTransaction := Transaction{
 		UserID:          senderID,
 		ReferenceNumber: referenceNumber,
@@ -193,7 +190,7 @@ func parseAmount(amountStr string) (float64, error) {
 }
 
 // Deposit funds into the account
-func (s *SmartContract) Deposit(ctx contractapi.TransactionContextInterface, userID string, amount string, referenceNumber string) error {
+func (s *SmartContract) Deposit(ctx contractapi.TransactionContextInterface, userID string, amount string, referenceNumber string, timestamp string) error {
     accountKey := "USER_" + userID
     accountBytes, err := ctx.GetStub().GetState(accountKey)
     if err != nil || accountBytes == nil {
@@ -213,7 +210,7 @@ func (s *SmartContract) Deposit(ctx contractapi.TransactionContextInterface, use
         ReferenceNumber: referenceNumber,
         Type:           "Deposit",
         Amount:         depositAmount,
-		Timestamp:      time.Now().String(),
+		Timestamp:      timestamp,
     }
     transactionKey := fmt.Sprintf("TRANSACTION_%s_%s", userID, referenceNumber)
     transactionBytes, _ := json.Marshal(transaction)
@@ -223,7 +220,7 @@ func (s *SmartContract) Deposit(ctx contractapi.TransactionContextInterface, use
 }
 
 // Withdraw funds from the account
-func (s *SmartContract) Withdraw(ctx contractapi.TransactionContextInterface, userID string, amount string, referenceNumber string) error {
+func (s *SmartContract) Withdraw(ctx contractapi.TransactionContextInterface, userID string, amount string, referenceNumber string, timestamp string) error {
     accountKey := "USER_" + userID
     accountBytes, err := ctx.GetStub().GetState(accountKey)
     if err != nil || accountBytes == nil {
@@ -246,7 +243,7 @@ func (s *SmartContract) Withdraw(ctx contractapi.TransactionContextInterface, us
         ReferenceNumber: referenceNumber,
         Type:           "Withdraw",
         Amount:         withdrawAmount,
-        Timestamp:      time.Now().String(),
+        Timestamp:      timestamp,
     }
     transactionKey := fmt.Sprintf("TRANSACTION_%s_%s", userID, referenceNumber)
     transactionBytes, _ := json.Marshal(transaction)
@@ -256,7 +253,7 @@ func (s *SmartContract) Withdraw(ctx contractapi.TransactionContextInterface, us
 }
 
 // CreateTransfer creates a new transfer with states for sender and receiver
-func (s *SmartContract) CreateTransfer(ctx contractapi.TransactionContextInterface, senderID string, receiverID string, amount string, referenceNumber string) error {
+func (s *SmartContract) CreateTransfer(ctx contractapi.TransactionContextInterface, senderID string, receiverID string, amount string, referenceNumber string, timestamp string) error {
 	// Parse amount
 	transferAmount, err := strconv.ParseFloat(amount, 64)
 	if err != nil {
@@ -300,7 +297,7 @@ func (s *SmartContract) CreateTransfer(ctx contractapi.TransactionContextInterfa
 	ctx.GetStub().PutState(receiverKey, receiverBytes)
 
 	// Create transfer record
-	timestamp := time.Now().String()
+	
 	transfer := Transfer{
 		SenderID:        senderID,
 		ReceiverID:      receiverID,
