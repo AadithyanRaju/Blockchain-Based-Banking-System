@@ -57,12 +57,13 @@ async function getAccount(userID) {
   });
 }
 
-async function transfer(userID, receiverID, amount, reference, timestamp) {
+async function transfer(userID, receiverID, amount, reference) {
   client.CreateTransfer({ 
     senderID: userID, 
     receiverID: receiverID, 
     amount: amount, 
-    referenceNumber: reference
+    referenceNumber: reference,
+    timestamp: generateTimestamp()
   }, (err, response) => {
     if (err) {
       console.error('Error:', err);
@@ -79,7 +80,7 @@ async function transfer(userID, receiverID, amount, reference, timestamp) {
 
 
 // Transfer funds
-await transfer('donator1', 'collector', 1000, '000000000001', generateTimestamp());
+await transfer('donator1', 'collector', 1000, '000000000001');
 
 // Get account details
 // await getAccount('donator1');
