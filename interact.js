@@ -63,7 +63,7 @@ class BlockchainService {
         }
     }
 
-    async deposit(userID, amount, referenceNumber) {
+    async deposit(userID, amount, referenceNumber, timestamp) {
         const { gateway, contract } = await this._connect();
         try {
             await contract.submitTransaction(
@@ -81,7 +81,7 @@ class BlockchainService {
         }
     }
 
-    async withdraw(userID, amount, referenceNumber) {
+    async withdraw(userID, amount, referenceNumber, timestamp) {
         const { gateway, contract } = await this._connect();
         try {
             await contract.submitTransaction(
@@ -99,7 +99,7 @@ class BlockchainService {
         }
     }
 
-    async createTransfer(senderID, receiverID, amount, referenceNumber) {
+    async createTransfer(senderID, receiverID, amount, referenceNumber, timestamp) {
         const { gateway, contract } = await this._connect();
         try {
             await contract.submitTransaction(
