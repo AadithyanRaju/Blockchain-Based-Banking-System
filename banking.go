@@ -319,19 +319,31 @@ func (s *SmartContract) CreateTransfer(ctx contractapi.TransactionContextInterfa
 
 // GetTransfer fetches a transfer transaction by key
 func (s *SmartContract) GetTransfer(ctx contractapi.TransactionContextInterface, senderID string, receiverID string, referenceNumber string) (*Transfer, error) {
-	transferKey := fmt.Sprintf("TRANSACTION_TRANSFER_%s_%s_%s", senderID, receiverID, referenceNumber)
-	transferBytes, err := ctx.GetStub().GetState(transferKey)
-	if err != nil || transferBytes == nil {
-		return nil, fmt.Errorf("transfer not found")
-	}
+    // Check both key formats
+    transferKey1 := fmt.Sprintf("TRANSACTION_TRANSFER_%s_%s_%s", senderID, receiverID, referenceNumber)
+    transferKey2 := fmt.Sprintf("TRANSACTION_TRANSFER_%s_%s_%s", receiverID, senderID, referenceNumber)
 
-	var transfer Transfer
-	err = json.Unmarshal(transferBytes, &transfer)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshalling transfer: %v", err)
-	}
+    transferBytes, err := ctx.GetStub().GetState(transferKey1)
+    if err != nil {
+        return nil, fmt.Errorf("failed to get transfer: %v", err)
+    }
+    if transferBytes == nil {
+		transferBytes, err = ctx.GetStub().GetState(transferKey2)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get transfer: %v", err)
+		}
+		if transferBytes == nil {
+            return nil, fmt.Errorf("transfer not found")
+        }
+    }
 
-	return &transfer, nil
+    var transfer Transfer
+    err = json.Unmarshal(transferBytes, &transfer)
+    if err != nil {
+        return nil, fmt.Errorf("error unmarshalling transfer: %v", err)
+    }
+
+    return &transfer, nil
 }
 
 func main() {

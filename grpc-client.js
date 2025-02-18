@@ -73,6 +73,16 @@ async function transfer(userID, receiverID, amount, reference) {
   });
 }
 
+async function getTransfer(senderID, receiverID, reference) {
+  client.GetTransfer({ senderID: senderID, receiverID: receiverID, referenceNumber: reference }, (err, response) => {
+    if (err) {
+      console.error('Error:', err);
+    } else {
+      console.log(response);
+    }
+  });
+}
+
 // Create accounts
 // await createAccount('donator1', 'Donator 1', '111122223333', 'don1@p.com', 'don1', '1234567890', 'user', 10000000.0);
 // await createAccount('donator2', 'Donator 2', '111122223334', 'don2@p.com', 'don2', '1234567890', 'user', 10000000.0);
@@ -80,7 +90,8 @@ async function transfer(userID, receiverID, amount, reference) {
 
 
 // Transfer funds
-await transfer('donator1', 'collector', 1000, '000000000001');
+// await transfer('donator1', 'collector', 1000, '000000000001');
+await getTransfer('donator1', 'collector', '000000000001');
 
 // Get account details
 // await getAccount('donator1');
