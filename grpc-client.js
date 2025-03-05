@@ -121,8 +121,12 @@ async function getAllKeys() {
 // Transfer funds
 // await transfer('donator1', 'collector', 1000, '000000000001');
 // await getTransfer('don1', 'col', '000000000001');
-await getAllTransfers();
+
 // Get account details
 // await getAccount('donator1');
 // await getAccount('donator2');
 // await getAccount('collector');
+
+//Degub
+// await getAllTransfers();
+await getAllKeys();
