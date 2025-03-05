@@ -173,6 +173,7 @@ class BlockchainService {
         try {
             const result = await contract.evaluateTransaction('GetAllTransfers');
             console.log('All transfers fetched successfully');
+            console.log(result.toString());
             return JSON.parse(result.toString());
         } catch (error) {
             console.error('Error fetching all transfers:', error);
