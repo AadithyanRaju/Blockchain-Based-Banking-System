@@ -23,7 +23,7 @@ function hashWithSHA256(data) {
   return hash.digest('hex');
 }
 
-const client = new bankingProto('172.16.241.128:50051', credentials.createInsecure());
+const client = new bankingProto('192.168.168.128:50051', credentials.createInsecure());
 
 
 // Create Accounts
@@ -83,16 +83,35 @@ async function getTransfer(senderID, receiverID, reference) {
   });
 }
 
+async function getAllAccounts() {
+  client.GetAllAccounts({}, (err, response) => {
+    if (err) {
+      console.error('Error:', err);
+    } else {
+      console.log(response);
+    }
+  });
+}
+
+async function getAllTransfers() {
+  client.GetAllTransfers({}, (err, response) => {
+    if (err) {
+      console.error('Error:', err);
+    } else {
+      console.log(response);
+    }
+  });
+}
+
 // Create accounts
 // await createAccount('donator1', 'Donator 1', '111122223333', 'don1@p.com', 'don1', '1234567890', 'user', 10000000.0);
 // await createAccount('donator2', 'Donator 2', '111122223334', 'don2@p.com', 'don2', '1234567890', 'user', 10000000.0);
 // await createAccount('collector', 'Collector', '111122223335', 'col@p.com', 'col', '1234567890', 'user', 500.0);
 
-
 // Transfer funds
 // await transfer('donator1', 'collector', 1000, '000000000001');
-await getTransfer('donator1', 'collector', '000000000001');
-
+// await getTransfer('don1', 'col', '000000000001');
+await getAllTransfers();
 // Get account details
 // await getAccount('donator1');
 // await getAccount('donator2');

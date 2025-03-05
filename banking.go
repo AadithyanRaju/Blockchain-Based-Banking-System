@@ -346,6 +346,24 @@ func (s *SmartContract) GetTransfer(ctx contractapi.TransactionContextInterface,
     return &transfer, nil
 }
 
+func (s *SmartContract) GetAllTransfers(ctx contractapi.TransactionContextInterface) ([]*Transfer, error) {
+	resultsIterator, err := ctx.GetStub().GetStateByPartialCompositeKey("TRANSACTION_TRANSFER", []string{})
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	var transfers []*Transfer
+	for resultsIterator.HasNext() {
+		item, _ := resultsIterator.Next()
+		var transfer Transfer
+		json.Unmarshal(item.Value, &transfer)
+		transfers = append(transfers, &transfer)
+	}
+
+	return transfers, nil
+}
+
 func main() {
 	chaincode, err := contractapi.NewChaincode(&SmartContract{})
 	if err != nil {

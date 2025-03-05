@@ -7,6 +7,8 @@ service BankingService {
   rpc Withdraw (TransactionRequest) returns (Response);
   rpc CreateTransfer (TransferRequest) returns (Response);
   rpc GetTransfer (TransferQuery) returns (TransferResponse);
+  rpc GetAllAccounts (Empty) returns (AccountList);
+  rpc GetAllTransfers (Empty) returns (TransferList);
 }
 
 message AccountRequest {
@@ -66,3 +68,14 @@ message TransferResponse {
 message Response {
   string message = 1;
 }
+
+message AccountList {
+  repeated AccountResponse accounts = 1;
+}
+
+message TransferList {
+  repeated TransferResponse transfers = 1;
+}
+
+
+message Empty {}

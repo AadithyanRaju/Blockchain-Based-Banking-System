@@ -76,7 +76,23 @@ const implementations = {
     } catch (error) {
       callback(error, null);
     }
-  }
+  },
+  GetAllAccounts: async (call, callback) => {
+    try {
+      const accounts = await blockchainService.getAllAccounts();
+      callback(null, { accounts });
+    } catch (error) {
+      handleError(error, callback);
+    }
+  },
+  GetAllTransfers: async (call, callback) => {
+    try {
+      const transfers = await blockchainService.getAllTransfers();
+      callback(null, { transfers });
+    } catch (error) {
+      handleError(error, callback);
+    }
+  }  
 };
 
 const server = new grpc.Server();
