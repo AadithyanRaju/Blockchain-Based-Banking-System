@@ -92,6 +92,16 @@ const implementations = {
     } catch (error) {
       handleError(error, callback);
     }
+  },
+  GetAllKeys: async (call, callback) => {
+    try {
+        const { gateway, contract } = await blockchainService._connect();
+        const result = await contract.evaluateTransaction('GetAllKeys');
+        console.log('Ledger Keys:', result.toString());
+        callback(null, { keys: JSON.parse(result.toString()) });
+    } catch (error) {
+        callback(error, null);
+    }
   }  
 };
 

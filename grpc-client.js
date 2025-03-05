@@ -103,6 +103,16 @@ async function getAllTransfers() {
   });
 }
 
+async function getAllKeys() {
+  client.GetAllKeys({}, (err, response) => {
+    if (err) {
+      console.error('Error:', err);
+    } else {
+      console.log(response);
+    }
+  });
+}
+
 // Create accounts
 // await createAccount('donator1', 'Donator 1', '111122223333', 'don1@p.com', 'don1', '1234567890', 'user', 10000000.0);
 // await createAccount('donator2', 'Donator 2', '111122223334', 'don2@p.com', 'don2', '1234567890', 'user', 10000000.0);

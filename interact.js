@@ -172,11 +172,30 @@ class BlockchainService {
         const { gateway, contract } = await this._connect();
         try {
             const result = await contract.evaluateTransaction('GetAllTransfers');
-            console.log('All transfers fetched successfully');
-            console.log(result.toString());
+            if (!result || result.length === 0) {
+                console.log('No transfer records found');
+                return [];
+            }
             return JSON.parse(result.toString());
         } catch (error) {
             console.error('Error fetching all transfers:', error);
+            throw error;
+        } finally {
+            gateway.disconnect();
+        }
+    }
+
+    async getAllKeys() {
+        const { gateway, contract } = await this._connect();
+        try {
+            const result = await contract.evaluateTransaction('GetAllKeys');
+            if (!result || result.length === 0) {
+                console.log('No keys found in the ledger');
+                return [];
+            }
+            return JSON.parse(result.toString());
+        } catch (error) {
+            console.error('Error fetching all keys:', error);
             throw error;
         } finally {
             gateway.disconnect();
