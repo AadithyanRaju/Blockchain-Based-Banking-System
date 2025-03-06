@@ -119,8 +119,8 @@ async function getAllKeys() {
 // await createAccount('collector', 'Collector', '111122223335', 'col@p.com', 'col', '1234567890', 'user', 500.0);
 
 // Transfer funds
-// await transfer('donator1', 'collector', 1000, '000000000001');
-// await getTransfer('don1', 'col', '000000000001');
+// await transfer('donator1', 'collector', 1000, '000000000002');
+// await getTransfer('donator1', 'collector', '000000000002');
 
 // Get account details
 // await getAccount('donator1');

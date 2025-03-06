@@ -9,9 +9,14 @@ service BankingService {
   rpc GetTransfer (TransferQuery) returns (TransferResponse);
   rpc GetAllTransfers (EmptyRequest) returns (TransferList);
   rpc GetAllKeys (EmptyRequest) returns (KeyList);
+  rpc GetTransferByStateKey (Key) returns (TransferResponse)
 }
 
 message EmptyRequest {}
+
+message Key {
+  string stateKey = 1;
+}
 
 message KeyList {
   repeated string keys = 1;

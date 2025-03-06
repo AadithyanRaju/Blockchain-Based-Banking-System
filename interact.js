@@ -201,6 +201,21 @@ class BlockchainService {
             gateway.disconnect();
         }
     }
+
+    async getTransferByStateKey(stateKey) {
+        const { gateway, contract } = await this._connect();
+        try {
+            const result = await contract.evaluateTransaction('GetTransferByStateKey', stateKey);
+            console.log('Transfer fetched successfully');
+            return JSON.parse(result.toString());
+        } catch (error) {
+            console.error('Error fetching transfer:', error);
+            throw error;
+        } finally {
+            gateway.disconnect();
+        }
+    }
+
 }
 
 module.exports = BlockchainService;

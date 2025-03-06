@@ -380,6 +380,25 @@ func (s *SmartContract) GetAllKeys(ctx contractapi.TransactionContextInterface) 
     return keys, nil
 }
 
+// GetTransferByStateKey fetches a transfer transaction by state key
+func (s *SmartContract) GetTransferByStateKey(ctx contractapi.TransactionContextInterface, stateKey string) (*Transfer, error) {
+	transferBytes, err := ctx.GetStub().GetState(stateKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get transfer: %v", err)
+	}
+	if transferBytes == nil {
+		return nil, fmt.Errorf("transfer not found")
+	}
+
+	var transfer Transfer
+	err = json.Unmarshal(transferBytes, &transfer)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshalling transfer: %v", err)
+	}
+
+	return &transfer, nil
+}
+
 
 func main() {
 	chaincode, err := contractapi.NewChaincode(&SmartContract{})
