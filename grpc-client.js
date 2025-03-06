@@ -112,6 +112,15 @@ async function getAllKeys() {
     }
   });
 }
+async function getTransferByStateKey(key) {
+  client.GetTransferByStateKey({ key: key }, (err, response) => {
+    if (err) {
+      console.error('Error:', err);
+    } else {
+      console.log(response);
+    }
+  });
+}
 
 // Create accounts
 // await createAccount('donator1', 'Donator 1', '111122223333', 'don1@p.com', 'don1', '1234567890', 'user', 10000000.0);
@@ -119,8 +128,8 @@ async function getAllKeys() {
 // await createAccount('collector', 'Collector', '111122223335', 'col@p.com', 'col', '1234567890', 'user', 500.0);
 
 // Transfer funds
-// await transfer('donator1', 'collector', 1000, '000000000002');
-// await getTransfer('donator1', 'collector', '000000000002');
+// await transfer('donator1', 'collector', 1000, '000000000001');
+// await getTransfer('don1', 'col', '000000000001');
 
 // Get account details
 // await getAccount('donator1');
@@ -129,4 +138,5 @@ async function getAllKeys() {
 
 //Degub
 // await getAllTransfers();
-await getAllKeys();
+// await getAllKeys();
+await getTransferByStateKey('TRANSACTION_TRANSFER_donator1_collector_000000000002');

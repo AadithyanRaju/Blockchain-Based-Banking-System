@@ -106,9 +106,6 @@ const implementations = {
   GetTransferByStateKey: async (call, callback) => {
     try {
       const { stateKey } = call.request;
-      if (!stateKey.startsWith('TRANSACTION_TRANSFER_')) {
-        throw new Error('Invalid state key');
-      }
       const transfer = await blockchainService.getTransferByStateKey(stateKey);
       callback(null, transfer);
     } catch (error) {
