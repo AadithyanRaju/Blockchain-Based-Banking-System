@@ -9,7 +9,7 @@ service BankingService {
   rpc GetTransfer (TransferQuery) returns (TransferResponse);
   rpc GetAllTransfers (EmptyRequest) returns (TransferList);
   rpc GetAllKeys (EmptyRequest) returns (KeyList);
-  rpc GetTransferByStateKey (Key) returns (TransferResponse)
+  rpc GetTransferByStateKey (Key) returns (TransferResponse);
 }
 
 message EmptyRequest {}
