@@ -1,42 +1,43 @@
-# Blockchain Based Banking System
-## Introduction
+# Blockchain-Based Banking System
+
+## 📘 Introduction
+
 ### Overview
-In today’s rapidly evolving financial landscape, the need for secure, transparent, and efficient banking systems has never been more critical. Traditional banking infrastructures, though widely used, often face challenges such as high operational costs, vulnerability to fraud, and delays due to centralized processing. To address these issues, our blockchain-based banking system leverages Distributed Ledger Technology (DLT), specifically Hyperledger Fabric, to create a decentralized, tamper-resistant, and highly secure banking backend.
+This project is a **Blockchain-Based Banking System** built on **Hyperledger Fabric**. It provides secure and transparent account handling, transactions, and auditability through decentralized ledger technology. Core features include:
+- Immutable transaction logs
+- Role-based account operations
+- Cryptographic verification
 
-This project introduces a blockchain-based solution designed to handle core banking operations like account management, transaction processing, and compliance in an efficient and transparent manner. By using blockchain, we ensure that all transactions are recorded immutably, providing robust security and a clear audit trail, critical for regulatory compliance in the financial sector.
+---
 
-### Purpose
-The primary purpose of this project is to build a backend infrastructure for a banking system that utilizes blockchain to:
+## ⚙️ Prerequisites
 
- - <b>Enhance Security</b>: Using cryptographic principles, our blockchain solution will protect sensitive data and transactions from unauthorized access and fraud.
- - <b>Ensure Transparency</b>: All transactions are permanently recorded on the blockchain, making them transparent and auditable for regulators and customers alike.
- - <b>Improve Efficiency</b>: By automating transaction validation through smart contracts, the system reduces reliance on manual processes, speeding up operations and reducing costs.
+Make sure you have the following installed:
+- [Node.js](https://nodejs.org/)
+- [Go](https://go.dev/)
+- [Docker & Docker Compose](https://docs.docker.com/)
+- Hyperledger Fabric binaries 
 
-### Project Goals
-The main objectives of the blockchain-based banking system are:
-
- - <b>Decentralized Account and Transaction Management</b>: Enable seamless creation, management, and maintenance of user accounts and transactions in a decentralized ledger environment.
- - <b>Smart Contract Integration</b>: Leverage smart contracts for automating compliance checks, transaction validations, and other repetitive banking operations.
- - <b>Immutable Audit Trails</b>: Provide regulators and auditors with secure, transparent, and immutable access to transaction records.
- - <b>Regulatory Compliance</b>: Adhere to essential banking regulations, including GDPR, AML (Anti-Money Laundering), and KYC (Know Your Customer), through blockchain integration. 
-
-## Prerequisites
- - Linux Environment
- - Bash
- - Docker and Docker-Compose
- - NodeJS and npm
- - Golang
- - Curl
- - Git
+---
 
 ## NOTE
 Read all the code used in the project, for safety reasons.
 
-## Running
-Run the bash script
-```bash
-bash main.sh
-```
+---
+
+## 🛠️ Setup Instructions
+
+1. **Clone the Repository**
+   ```bash
+   $ git clone https://github.com/AadithyanRaju/Blockchain-Based-Banking-System.git
+   $ cd Blockchain-Based-Banking-System
+   ```
+
+2. **Start the Blockchain Network**
+    Run the bash script
+    ```bash
+    $ bash main.sh
+    ```
     Menu:
     1. Install Required Packages ( Debian and Arch based Destros)
     2. Setup the workspace (Creates and updates edited documents)
@@ -48,3 +49,39 @@ bash main.sh
     8. Reset the workspace (Uses Sudo, use only if it is nessessary)
     9. Exit
 
+    - Use option 2 to setup workspace.
+    - Use option 3 to Start Blockchain network & Update Chaincode to the network.
+    - Use option 7 to enter cli-mode on scripts folder.
+
+4. **Enroll Admin and Register Users**
+   ```bash
+   $ node enrollAdmin.js
+   $ node registerUser.js <Authorized Username>
+   ```
+
+5. **Interact with Blockchian**
+
+    Usage: node interact.js <Autherized User> <Action>
+
+    Actions: CreateAccount, Balance, Deposit, Withdraw, Transfer, GetAllAccounts, DeleteAccount, QueryTransaction
+
+    CreateAccount: ```node interact.js <Autherized User> CreateAccount <AccountName> <InitialBalance>```
+
+    Balance: ```node interact.js <Autherized User> Balance <AccountName>```
+
+    Deposit: ```node interact.js <Autherized User> Deposit <AccountName> <Amount>```
+
+    Withdraw: ```node interact.js <Autherized User> Withdraw <AccountName> <Amount>```
+
+    Transfer: ```node interact.js <Autherized User> Transfer <FromAccount> <ToAccount> <Amount>```
+
+    GetAllAccounts: ```node interact.js <Autherized User> GetAllAccounts```
+
+    DeleteAccount: ```node interact.js <Autherized User> DeleteAccount <AccountName>```
+
+    QueryTransaction: ```node interact.js <Autherized User> QueryTransaction <AccountName>```
+
+---
+
+## 📝 License
+This project is licensed under the MIT License.
