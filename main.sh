@@ -1,9 +1,6 @@
 #!/bin/bash
 ROOTDIR=$(pwd)
 GITHUBID="AadithyanRaju"
-PROJECTNAME="BankingSystem"
-CONTRACTNAME="banking"
-
 #check if 'go' directory exists or not
 if [ ! -f "$ROOTDIR/main.sh" ]; then
     echo "Go directory does not exist."
@@ -39,6 +36,7 @@ while true; do
     echo "4. Update Chaincode to the Blockchain"
     echo "5. Stop the Blockchain"
     echo "6. List Docker Containers"
+    echo "7. Enter Bash/Zsh Shell (Default: Bash, enter zsh for zsh)"
     echo "8. Reset the workspace"
     echo "9. Exit"
     read -p "Enter your choice: " choice
@@ -71,16 +69,16 @@ while true; do
             if [ -d "$ROOTDIR/go/src/github.com/$GITHUBID/fabric-samples" ]; then
                 echo "Fabric Samples already exists."
             else
-                ./install-fabric.sh d s b # -f 2.5.9 -c 1.5.12
+                ./install-fabric.sh d s b -f 2.5.9 -c 1.5.12
 
             fi
 
-            if [ ! -d "$ROOTDIR/go/src/github.com/$GITHUBID/chaincode/$CONTRACTNAME/go" ]; then
+            if [ ! -d "$ROOTDIR/go/src/github.com/$GITHUBID/chaincode/banking/go" ]; then
                 echo "Setting up Chaincode..."
-                mkdir -p "$ROOTDIR/go/src/github.com/$GITHUBID/chaincode/$CONTRACTNAME/go"
-                cd "$ROOTDIR/go/src/github.com/$GITHUBID/chaincode/$CONTRACTNAME/go"
-                go mod init $CONTRACTNAME
-                cp $ROOTDIR/$CONTRACTNAME.go .
+                mkdir -p "$ROOTDIR/go/src/github.com/$GITHUBID/chaincode/banking/go"
+                cd "$ROOTDIR/go/src/github.com/$GITHUBID/chaincode/banking/go"
+                go mod init banking
+                cp $ROOTDIR/banking.go .
                 go get github.com/hyperledger/fabric-contract-api-go/contractapi
                 go mod tidy
                 go mod vendor
@@ -88,22 +86,28 @@ while true; do
             else
                 echo "Chaincode already exists."
             fi
-            # 
-            # if [ ! -d "$ROOTDIR/go/src/github.com/$GITHUBID/$PROJECTNAME" ]; then
-            #     echo "Setting up Application..."
-            #     mkdir -p "$ROOTDIR/go/src/github.com/$GITHUBID/$PROJECTNAME"
-            #     cd "$ROOTDIR/go/src/github.com/$GITHUBID/$PROJECTNAME"
-            #     # uncomment the below line if you want to use hardhat for ethereum development
-            #     #npx hardhat init 
-            #     npm install fabric-network fabric-ca-client
-            #     cd $ROOTDIR
-            # else
-            #     echo "$PROJECTNAME already exists."
-            #     echo "If you want to reset the workspace, please delete the 'go' directory and run this script again."
-            # fi
 
-            echo "Updating the $PROJECTNAME contracts..."
-            cp $ROOTDIR/$CONTRACTNAME.go $ROOTDIR/go/src/github.com/$GITHUBID/chaincode/$CONTRACTNAME/go/$CONTRACTNAME.go
+            if [ ! -d "$ROOTDIR/go/src/github.com/$GITHUBID/banking-system" ]; then
+                echo "Setting up Application..."
+                mkdir -p "$ROOTDIR/go/src/github.com/$GITHUBID/banking-system"
+                cd "$ROOTDIR/go/src/github.com/$GITHUBID/banking-system"
+                # uncomment the below line if you want to use hardhat for ethereum development
+                #npx hardhat init 
+                npm install fabric-network fabric-ca-client
+                cd $ROOTDIR
+            else
+                echo "Banking-system already exists."
+                echo "If you want to reset the workspace, please delete the 'go' directory and run this script again."
+            fi
+
+            echo "Updating the banking-system scripts..."
+            if [ ! -d "$ROOTDIR/go/src/github.com/$GITHUBID/banking-system/scripts" ]; then
+                mkdir -p "$ROOTDIR/go/src/github.com/$GITHUBID/banking-system/scripts"
+            fi
+            cp $ROOTDIR/Scripts/* $ROOTDIR/go/src/github.com/$GITHUBID/banking-system/scripts/
+
+            echo "Updating the banking-system contracts..."
+            cp $ROOTDIR/banking.go $ROOTDIR/go/src/github.com/$GITHUBID/chaincode/banking/go/banking.go
 
             ;;
         3)
@@ -113,18 +117,19 @@ while true; do
             export GOPROXY="https://proxy.golang.org"
             export GOMODCACHE="$ROOTDIR/go/pkg/mod"
             export GOPATH="$ROOTDIR/go"
-            export GOROOT="/usr/lib/go"
+            export GOROOT="$(which go)"
             if [ $(docker ps | grep hyperledger | wc -l) -eq 0 ]; then
-                ./network.sh up -ca -s couchdb
-                ./network.sh createChannel -c mychannel
+                ./network.sh up createChannel -ca
+            fi
+            if [ $(docker ps | grep hyperledger | wc -l) -eq 6 ]; then
+                ./network.sh deployCC -ccn banking -ccp $ROOTDIR/go/src/github.com/$GITHUBID/chaincode/banking/go -ccl go
             fi
             cd -
             ;;
         4)
             echo "Adding Chaincode to the Blockchain..."
-            cp $ROOTDIR/$CONTRACTNAME.go $ROOTDIR/go/src/github.com/$GITHUBID/chaincode/$CONTRACTNAME/go/$CONTRACTNAME.go -v
             cd "$ROOTDIR/go/src/github.com/$GITHUBID/fabric-samples/test-network"
-            ./network.sh deployCC -ccn $CONTRACTNAME -ccp $ROOTDIR/go/src/github.com/$GITHUBID/chaincode/$CONTRACTNAME/go -ccl go
+            ./network.sh deployCC -ccn banking -ccp $ROOTDIR/go/src/github.com/$GITHUBID/chaincode/banking/go -ccl go
             cd -
             ;;
 
@@ -136,6 +141,16 @@ while true; do
         6)
             echo "Listing Docker Containers..."
             docker ps -a
+            ;;
+        7)
+            cd "$ROOTDIR/go/src/github.com/$GITHUBID/banking-system/scripts"
+            echo "Entering Bash Shell..."
+            bash
+            ;;
+        "zsh")
+            cd "$ROOTDIR/go/src/github.com/$GITHUBID/banking-system/scripts"
+            echo "Entering Zsh Shell..."
+            zsh
             ;;
         8)
             cd "$ROOTDIR/go/src/github.com/$GITHUBID/fabric-samples/test-network"
@@ -156,4 +171,3 @@ while true; do
     read -p "Press Enter to continue..."
 done
 cd $ROOTDIR
-# ln -s "$ROOTDIR/go/src/github.com/$GITHUBID/$PROJECTNAME/fabric-samples" "$ROOTDIR/go/src/github.com/$GITHUBID/fabric-samples"

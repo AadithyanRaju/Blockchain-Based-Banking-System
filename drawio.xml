@@ -1,0 +1,61 @@
+<mxfile>
+  <diagram name="Page-1" id="UvH65-qTym0R9G_Fq-Gz">
+    <mxGraphModel dx="1326" dy="744" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="7" value="Client Application" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="100" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="Node.js Scripts\n(interact.js, etc.)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="7">
+          <mxGeometry x="40" y="200" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="Wallet\n(Admin, User Identities)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="7">
+          <mxGeometry x="220" y="200" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" value="Blockchain Network" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="100" width="180" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="Orderer" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="10">
+          <mxGeometry x="320" y="200" width="80" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="Peer0\n(Org1, Hosts Chaincode)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="10">
+          <mxGeometry x="460" y="200" width="80" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="Peer1\n(Org1, Hosts Chaincode)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="10">
+          <mxGeometry x="600" y="200" width="80" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="CA" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="10">
+          <mxGeometry x="690" y="200" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="Smart Contract (Chaincode)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="100" width="200" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="Banking Operations\n- Query Balance\n- Transfer Funds\n- Deposit Funds\n- Withdraw Funds" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="15">
+          <mxGeometry x="840" y="200" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" edge="1" parent="1" source="8" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" edge="1" parent="1" source="9" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" edge="1" parent="1" source="11" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="20" edge="1" parent="1" source="12" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="21" edge="1" parent="1" source="13" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" edge="1" parent="1" source="14" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" edge="1" parent="1" source="16" target="15">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,8 +1,4 @@
 # Blockchain Based Banking System
-## Notice
-Check the working model on branch [v1](https://github.com/AadithyanRaju/Blockchain-Based-Banking-System/tree/v1).
-This main branch is/going to be redeveloped for a better system.
-
 ## Introduction
 ### Overview
 In today’s rapidly evolving financial landscape, the need for secure, transparent, and efficient banking systems has never been more critical. Traditional banking infrastructures, though widely used, often face challenges such as high operational costs, vulnerability to fraud, and delays due to centralized processing. To address these issues, our blockchain-based banking system leverages Distributed Ledger Technology (DLT), specifically Hyperledger Fabric, to create a decentralized, tamper-resistant, and highly secure banking backend.
@@ -36,9 +32,19 @@ The main objectives of the blockchain-based banking system are:
 ## NOTE
 Read all the code used in the project, for safety reasons.
 
-## Setup
-1. Run ```bash main.sh```
-2. Use the menu and run 2,3, and 4 to Create working directory, start the blockchain network and deploy the chaincode
-3. Run ```npm install``` to get all required packages.
-4. Run ```node enrolladmin.js``` to enroll the blockchain network admin.
-5. Run ```node grpc-server.js``` to start grpc.
+## Running
+Run the bash script
+```bash
+bash main.sh
+```
+    Menu:
+    1. Install Required Packages ( Debian and Arch based Destros)
+    2. Setup the workspace (Creates and updates edited documents)
+    3. Start the Blockchain
+    4. Update Chaincode to the Blockchain
+    5. Stop the Blockchain
+    6. List Docker Containers
+    7. Enter Bash/Zsh Shell (Default: Bash, enter zsh for zsh)
+    8. Reset the workspace (Uses Sudo, use only if it is nessessary)
+    9. Exit
+
